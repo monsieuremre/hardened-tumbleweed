@@ -1,0 +1,364 @@
+## This file is part of hardened-tumbleweed <https://github.com/monsieuremre/hardened-tumbleweed>
+## hardened-tumbleweed is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+## License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+## version. hardened-tumbleweed is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+## implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details. You should have received a copy of the GNU General Public License along with this program. If not, see
+## <https://www.gnu.org/licenses/>.
+#
+## This file is originally taken from <https://github.com/openSUSE/permissions/blob/master/profiles/permissions.secure>
+## Some lines from the original file were commented out to be replaced by their better alternatives in the other config file
+#
+# /usr/share/permissions/permissions.secure
+#
+# Copyright (c) 2001 SuSE GmbH Nuernberg, Germany.  All rights reserved.
+#
+# Author: Roman Drahtmueller <draht@suse.de>, 2001
+#
+# 
+# See /usr/share/permissions/permissions for general hints on how to use
+# this file.
+#
+# /usr/share/permissions/permissions.secure is designed for the use in a
+# multi-user and networked installation. Most privileged file modes are
+# disabled here. Many programs that still have their suid- or sgid-modes
+# have had their security problems in the past already.
+# The primary target of this configuration is to make the basic things
+# such as changing passwords, the basic networking programs as well as
+# some of the all-day work programs properly function for the unprivileged
+# user. The dial-out packages are executable for users belonging to the
+# "dialout" group - therefore, these users are to be treated "privileged".
+# Packages such as (remote-) batch queueing systems, games, programs for 
+# the linux text console, everything linked against OOP libraries and
+# most other exotic utilities are turned into unprivileged binary files
+# in order for them not to cause any security problems if one or more of
+# the programs turn out to have buffer overruns or otherwise locally 
+# exploitable programming errors.
+# This file is not designed to make your system as closed and as restrictive
+# as at all possible. In many cases, restricted access to a configuration 
+# file is of no use since the data used can be obtained from the /proc file
+# system or interface configuration as well. Also, system programs such as
+# /sbin/ifconfig or /sbin/route are not changed because nosey users can
+# bring their own. "Security by obscurity" will not add any significant 
+# security-related advantage to the system. Keep in mind that curiosity
+# is a major motivation for your users to try to see behind the curtain.
+#
+# If you need the functionality of a program that usually runs as a
+# privileged user, then use it as root, or, if you are not root, ask your 
+# system administrator for advice. In many cases, adding a user to the 
+# "trusted" group gives her access to the resources that are not accessible
+# any more if the admin chose to select "secure" as the permissions default.
+#
+# Please make use of the diff program to see the differences between the
+# permissions.easy and permissions.secure files if things don't work as
+# they should and you suspect a permission or privilege problem.
+# The word "easy" is a reference for the /etc/permissions.easy file.
+#
+# As usual, these settings are "suggested". If you feel so inclined, 
+# please feel free to change the modes in this files, but keep a log 
+# of your changes for future reference.
+
+# Please always keep in mind that your system listens on network sockets
+# in the default configuration. Change this by disabling the services that 
+# you do not need or by restricting access to them using packet filters
+# or tcp wrappers (see hosts_access(5)) to gain a higher level of security
+# in your system.
+
+#
+# /etc
+#
+/etc/crontab                                            root:root          600
+/etc/exports                                            root:root          644
+/etc/fstab                                              root:root          644
+/var/lib/nfs/rmtab                                      root:root          644
+/etc/syslog.conf                                        root:root          600
+# we might want to tighten that up in the future in this profile (remove the
+# ability for others to read/enter)
+# /etc/cron.d/                                            root:root          755
+# /etc/cron.daily/                                        root:root          755
+# /etc/cron.hourly/                                       root:root          755
+# /etc/cron.monthly/                                      root:root          755
+# /etc/cron.weekly/                                       root:root          755
+
+#
+# suid system programs that need the suid bit to work:
+#
+# disable at and cron for users that do not belong to the group "trusted"
+/usr/bin/at                                             root:trusted      4750
+/usr/bin/crontab                                        root:trusted      4750
+/usr/bin/gpasswd                                        root:shadow       4755
+/usr/bin/newgrp                                         root:root         4755
+/usr/bin/passwd                                         root:shadow       4755
+/usr/bin/chfn                                           root:shadow       4755
+/usr/bin/chage                                          root:shadow       2755
+/usr/bin/chsh                                           root:shadow       4755
+/usr/bin/expiry                                         root:shadow       4755
+/usr/bin/sudo                                           root:root         4755
+/usr/sbin/su-wrapper                                    root:root         0755
+# #331020
+/usr/sbin/mount.nfs                                     root:root         0755
+#
+# #133657
+/usr/bin/fusermount                                     root:trusted      4750
+# needs setuid root when using shadow via NIS:
+# #216816
+/usr/sbin/unix_chkpwd                                   root:shadow       4755
+/usr/sbin/unix2_chkpwd                                  root:shadow       4755
+
+# squid changes from bnc#891268
+# - adjusted paths in bsc#1171569
+/var/cache/squid/                                       squid:root        0750
+/var/log/squid/                                         squid:root        0750
+/usr/libexec/squid/pinger                               root:squid        0750
+ +capabilities cap_net_raw=ep
+
+#
+# mixed section: most of it is disabled in this permissions.secure:
+#
+# xawtv (kind of reviewed via bsc#1171655)
+/usr/bin/v4l-conf                                       root:video        4750
+
+# turned off write and wall by disabling sgid tty:
+/usr/bin/wall                                           root:tty          0755
+/usr/bin/write                                          root:tty          0755
+# thttpd (bsc#1171580)
+/usr/bin/makeweb                                        root:www          2751
+# pcmcia:
+# Needs setuid to eject cards (#100120)
+/usr/sbin/pccardctl                                     root:trusted      4750
+
+# libgnomesu (#75823, #175616)
+/usr/libexec/libgnomesu/gnomesu-pam-backend             root:root         4755
+
+#
+# networking (need root for the privileged socket)
+#
+/usr/bin/clockdiff                                      root:root         0755
+ +capabilities cap_net_raw=p
+# mtr
+/usr/sbin/mtr-packet                                    root:root         0755
+
+# exim
+/usr/sbin/exim                                          root:root         4755
+
+#
+# linux text console utilities
+# 
+# setuid needed on the text console to set the terminal content on ctrl-o
+# #66112
+/usr/libexec/mc/cons.saver                              root:root         0755
+
+
+#
+# terminal emulators
+# This and future SUSE products have support for the utempter, a small helper
+# program that does the utmp/wtmp update work with the necessary rights.
+# The use of utempter obsoletes the need for sgid bits on terminal emulator
+# binaries. We mention screen here, but all other terminal emulators have
+# moved to /etc/permissions, with modes set to 0755.
+
+# needs setuid to access /dev/console
+# framebuffer terminal emulator (japanese)
+/usr/bin/jfbterm                                        root:tty          0755
+
+#
+# amanda
+#
+/usr/libexec/amanda/calcsize                            root:amanda       0750
+/usr/libexec/amanda/rundump                             root:amanda       0750
+/usr/libexec/amanda/runtar                              root:amanda       0750
+/usr/libexec/amanda/killpgrp                            root:amanda       0750
+/usr/libexec/amanda/ambind                              root:amanda       0750
+/usr/libexec/amanda/application/ambsdtar                root:amanda       0750
+/usr/libexec/amanda/application/amgtar                  root:amanda       0750
+/usr/libexec/amanda/application/amstar                  root:amanda       0750
+
+
+#
+# news (inn)
+#
+# the inn start script changes it's uid to news:news. Later innbind
+# is called by this user. Those programs do not need to be called by
+# anyone else, therefore the strange permissions 4554 are required
+# for operation. (#67032, #594393)
+#
+/usr/libexec/news/bin/rnews                             news:uucp         4550
+/usr/libexec/news/bin/inews                             news:news         2555
+/usr/libexec/news/bin/innbind                           root:news         4550
+
+#
+# sendfax
+#
+/usr/libexec/mgetty+sendfax/faxq-helper                 fax:trusted       4750
+/var/spool/fax/outgoing/                                fax:root          0755
+
+#
+# uucp
+#
+/var/spool/uucppublic/                                  root:uucp         1770
+/usr/bin/uucp                                           uucp:uucp         6555
+/usr/bin/uuname                                         uucp:uucp         6555
+/usr/bin/uustat                                         uucp:uucp         6555
+/usr/bin/uux                                            uucp:uucp         6555
+/usr/libexec/uucp/uucico                                uucp:uucp         6555
+/usr/libexec/uucp/uuxqt                                 uucp:uucp         6555
+
+
+# polkit new (bnc#523377)
+/usr/libexec/polkit-1/polkit-agent-helper-1             root:root         4755
+/usr/bin/pkexec                                         root:root         4755
+
+# dbus-1 (#333361 #1056764, bsc#1171164)
+/usr/libexec/dbus-1/dbus-daemon-launch-helper           root:messagebus   4750
+
+# policycoreutils (#440596)
+/usr/bin/newrole                                        root:root         0755
+
+# VirtualBox (#429725, bsc#1120650)
+/usr/lib/virtualbox/VirtualBoxVM                        root:vboxusers    0750
+/usr/lib/virtualbox/VBoxHeadless                        root:vboxusers    0755
+/usr/lib/virtualbox/VBoxSDL                             root:vboxusers    0755
+# (bnc#533550)
+/usr/lib/virtualbox/VBoxNetAdpCtl                       root:vboxusers    0755
+# bnc#669055
+/usr/lib/virtualbox/VBoxNetDHCP                         root:vboxusers    0755
+# bsc#1033425
+/usr/lib/virtualbox/VBoxNetNAT                          root:vboxusers    0755
+
+
+# open-vm-tools (bnc#474285)
+/usr/bin/vmware-user-suid-wrapper			root:root         0755
+
+# hawk (bnc#665045)
+/usr/sbin/hawk_chkpwd                                   root:haclient     4750
+
+# ecryptfs-utils (bnc#740110)
+/usr/sbin/mount.ecryptfs_private                        root:root         0755
+
+# wireshark (bsc#957624)
+/usr/bin/dumpcap					root:wireshark	  0750
+ +capabilities cap_net_raw,cap_net_admin=ep
+
+# singularity version 3 (bsc#1128598)
+/usr/libexec/singularity/bin/starter-suid               root:singularity  4750
+
+/usr/bin/su                                             root:root         4755
+/usr/bin/mount                                          root:root         4755
+/usr/bin/umount                                         root:root         4755
+
+# cdrecord of cdrtools from Joerg Schilling (bnc#550021)
+# in secure mode, no provisions are made for reliable cd burning, as admins
+# will have very likely prohibited that anyway.
+/usr/bin/cdrecord                                       root:root       755
+/usr/bin/readcd                                         root:root       755
+/usr/bin/cdda2wav                                       root:root       755
+
+# qemu-bridge-helper (bnc#765948, bsc#988279)
+/usr/libexec/qemu-bridge-helper			root:kvm	04750
+
+#iouyap (bnc#904060)
+/usr/libexec/iouyap					root:iouyap	0750
+
+# gstreamer ptp (bsc#960173)
+/usr/libexec/gstreamer-1.0/gst-ptp-helper		root:root	0755
+ +capabilities cap_net_bind_service=ep
+
+
+#
+# suexec is only secure if the document root doesn't contain files
+# writeable by wwwrun. Make sure you have a safe server setup
+# before setting the setuid bit! See also
+# https://bugzilla.novell.com/show_bug.cgi?id=263789
+# http://httpd.apache.org/docs/trunk/suexec.html
+# You need to override this in permissions.local.
+# suexec2 is a symlink for now, leave as-is
+#
+/usr/sbin/suexec             				root:root       0755
+
+# newgidmap / newuidmap (bsc#979282, bsc#1048645, bsc#1208309)
+/usr/bin/newgidmap					root:root	0755
+ +capabilities cap_setgid=ep
+/usr/bin/newuidmap					root:root	0755
+ +capabilities cap_setuid=ep
+
+# kwayland (bsc#1062182)
+/usr/bin/kwin_wayland					root:root	0755
+ +capabilities cap_sys_nice=ep
+
+# gvfs (bsc#1065864)
+/usr/libexec/gvfs/gvfsd-nfs                             root:root       0755
+
+# icinga2 (bsc#1069410)
+/run/icinga2/cmd/					icinga:icingacmd 2750
+
+# usbauth (bsc#1066877)
+/usr/libexec/usbauth-npriv                              root:usbauth    04750
+/usr/libexec/usbauth-notifier/                          root:usbauth-notifier  0750
+/usr/libexec/usbauth-notifier/usbauth-notifier          root:usbauth    02755
+
+# spice-gtk (bsc#1101420)
+/usr/bin/spice-client-glib-usb-acl-helper               root:kvm        04750
+
+# smc-tools (bsc#1102956)
+%{lib_dirs}/libsmc-preload.so                           root:root       04755
+
+# lxc (bsc#988348)
+/usr/libexec/lxc/lxc-user-nic                           root:kvm        04750
+
+# firejail (bsc#1059013)
+/usr/bin/firejail                                       root:firejail   04750
+
+# authbind (bsc#1111251)
+/usr/libexec/authbind/helper                            root:root       04755
+
+# fuse3 (bsc#1111230)
+/usr/bin/fusermount3                                    root:trusted    04750
+
+# 389-ds (bsc#1111564)
+/usr/sbin/ns-slapd					root:dirsrv	0750
+ +capabilities cap_net_bind_service=ep
+
+# nagios (bsc#1028975)
+/var/spool/nagios/                                      nagios:nagcmd   2775
+
+# ksysguard network helper (bsc#1151190)
+/usr/libexec/ksysguard/ksgrd_network_helper             root:root       0755
+ +capabilities cap_net_raw=ep
+
+# mariadb auth_pam_tool (bsc#1160285)
+%{lib_dirs}/mysql/plugin/auth_pam_tool_dir/auth_pam_tool root:root      4755
+
+# Workload Memory Protection (bsc#1161335)
+%{libexec_dirs}/sapwmp/sapwmp-capture                   root:sapsys    4750
+
+# s390-tools log directory for ts-shell (bsc#1167163)
+/var/log/ts-shell/                                      root:ts-shell     2770
+
+# setuid bit for cockpit (bsc#1169614)
+/usr/libexec/cockpit-session                            root:cockpit-wsinstance  4750
+
+# binary that launches texlive tools with group "mktex" (bsc#1171686)
+/usr/libexec/mktex/public                               root:mktex 2755
+
+# enlightenment privileged desktop operations (bsc#1169238)
+%{lib_dirs}/enlightenment/utils/enlightenment_system     root:root  4755
+
+# physlock (bsc#1175720, not suited for world access)
+/usr/bin/physlock                                       root:root  0755
+
+# xorg-x11-server (bsc#1175867)
+/usr/bin/Xorg.wrap                                      root:root 4755
+
+# please (bsc#1183669)
+/usr/bin/please                                         root:root 4755
+/usr/bin/pleaseedit                                     root:root 4755
+
+# postfix (bsc#1201385)
+/usr/sbin/postlog                                       root:maildrop 2755
+
+# kismet (bsc#1200954, bsc#1207654)
+/usr/bin/kismet_cap_linux_bluetooth                     root:kismet 0750
+ +capabilities cap_net_raw,cap_net_admin=ep
+
+/usr/bin/kismet_cap_linux_wifi                          root:kismet 0750
+ +capabilities cap_net_raw,cap_net_admin=ep

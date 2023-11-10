@@ -1,0 +1,13 @@
+## This file is part of hardened-tumbleweed <https://github.com/monsieuremre/hardened-tumbleweed>
+## hardened-tumbleweed is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+## License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+## version. hardened-tumbleweed is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+## implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details. You should have received a copy of the GNU General Public License along with this program. If not, see
+## <https://www.gnu.org/licenses/>.
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent security=apparmor rd.shell=0 mitigations=auto loglevel=0 spectre_v2=on spec_store_bypass_disable=on l1tf=full,force mds=full,nosmt tsx=off tsx_async_abort=full,nosmt kvm.nx_huge_pages=force nosmt=force slab_nomerge init_on_alloc=1 init_on_free=1 pti=on vsyscall=none page_alloc.shuffle=1 randomize_kstack_offset=on debugfs=off quiet loglevel=0 intel_iommu=on amd_iommu=on efi=disable_early_pci_dma random.trust_bootloader=off random.trust_cpu=off iommu.passthrough=0 iommu.strict=1"
+GRUB_TIMEOUT="0"
+GRUB_DISABLE_OS_PROBER="true"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_HIDDEN_TIMEOUT="0"
