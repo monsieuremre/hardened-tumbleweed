@@ -17,8 +17,11 @@ bash scripts/install-config-files.sh
 bash scripts/login-defs.sh
 bash scripts/parm-harden.sh
 bash scripts/user-homes.sh
+bash scripts/zypper.sh
+bash scripts/entropy.sh
+bash scripts/usb-guard.sh
+bash scripts/protect_grub.sh
 bash scripts/reload.sh
-
 clear
 
 echo "System hardening options have been applied."
