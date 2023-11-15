@@ -17,7 +17,8 @@ mv -f /etc/pam.d_system-login_old /etc/pam.d/system-login
 mv -f /etc/firewalld_firewalld.conf_old /etc/firewalld/firewalld.conf
 
 rm /etc/bluetooth/hardened-tumbleweed.conf
-rm /etc/default/grub.d/40_hardened-tumbleweed.cnf
+rm /etc/default/grub.d/40_hardened-tumbleweed
+rm /etc/default/grub.d/45_password
 rm /etc/modprobe.d/20_hardened-tumbleweed.conf
 rm /etc/NetworkManager/conf.d/20_hardened-tumbleweed.conf
 rm /etc/permissions.d/30_herdened-tumbleweed
@@ -27,3 +28,23 @@ rm /etc/security/limits.d/20_hardened-tumbleweed.conf
 rm /etc/systemctl.d/99_hardened-tumbleweed.conf
 rm /etc/systemd/coredump.conf.d/20_hardened-tumbleweed.conf
 rm /etc/systemd/networkd.conf.d/20_hardened-tumbleweed.conf
+
+for file in $(find /etc/zypp_repos.d_old -type f)
+do
+mv -f $file /etc/zypp/repos.d/
+rm $file
+done
+
+rm -rf /etc/zypp_repos.d_old
+
+if [ -f /etc/usbguard_installed ]
+then
+zypper remove usbguard-tools --non-interactive
+rm /etc/usbguard_installed
+fi
+
+if [ -f /etc/haveged_installed ]
+then
+zypper remove haveged --non-interactive
+rm /etc/haveged_installed
+fi
