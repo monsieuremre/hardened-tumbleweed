@@ -7,28 +7,26 @@ hardened-tumbleweed is a program, or more correctly a collection of scripts, tha
 * Kernel Settings Hardening
 * Kernel Modules Hardening
 * Network Hardening
-* Mac-address randomization
+* Mac-Address Randomization
 * Disabling Core Dumps
 * Hardened Boot Parameters
 * Firewall Configuration
 * Entropy Improvements
 * Brute Force Protection
 * Access Rights Hardening
-* Improved password hashing
-* Hardened home directories
-* Improved banners when logging in
-* Improved Bluetooth options
-* (Feature complete, but not 'fully' tested just yet) Hardened mount options
-* (Feature complete, but not 'fully' tested just yet) Hardened umask
-* (WIP) Using hardened-malloc by the GrapheOS Project by default for all 'root' processes
-* (WIP) Improving Mandatory Access Control
-* (WIP) Installing Various Packages for Security
-* (WIP) Securing all the outgoing connections by Zypper with HTTPS
-* (WIP) Configuring USB-Guard
-* (WIP) Configuring entropy daemons
-* (WIP) Displaying a warning banner also in GUI login on GNOME
-* (WIP) Forcing native wayland if supported and refraining from XWayland as much as possible
-* (WIP) Systemd hardening
+* Improved Password Hashing
+* Hardened Home Directories
+* Improved Login Banners
+* Improved Bluetooth Options
+* Protected Bootloader
+* Improved Entropy
+* HTTPS-Secured Outgoing Zypper Connections
+* USB-Guard Configuration
+* Hardened Mount Options
+* Hardened Umask
+#### Maybe in the future. For now, these can be enabled manually
+* Improved Mandatory Access Control with [apparmor.d](https://github.com/roddhjav/apparmor.d)
+* Using [hardened-malloc](https://github.com/GrapheneOS/hardened_malloc) For All 'Root' Processes
 
 ## Before Getting Started 
 
@@ -38,14 +36,14 @@ For the most part, the project is not 'completely' tested, expecially not all co
 
 ## Usage
 
-### Running/Installing
+### Download the script and make it executable
 
 You can either ```git clone``` the repository or do a manual download using your browser. Then, depending what you want, you would just have to run the scripts ```hardening_apply``` or ```hardening_reverse```, that are in the main diretory.
 
 ## Sources
 
 When preparing this script I used various tools and sources. The most notable tool I used is [Lynis](https://cisofy.com/lynis/). 
-This project is also somewhat losely based on one of my previous projects, namely ['chainmail'](https://github.com/monsieuremre/chainmail) that does similar stuff but on debian.
+This project is also somewhat losely based on one of my previous projects, namely 'chainmail' that does similar stuff but on debian.
 
 Notable resources I used for the aforementioned project and by extension this one are:
 * [Kicksecure Wiki](https://www.kicksecure.com/wiki/)
