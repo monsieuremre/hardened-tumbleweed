@@ -8,12 +8,28 @@
 ## details. You should have received a copy of the GNU General Public License along with this program. If not, see
 ## <https://www.gnu.org/licenses/>.
 
-cp /etc/pam.d/passwd /etc/pam.d_passwd_old
-cp /etc/pam.d/common-session /etc/pam.d_common-session_old
-cp /etc/pam.d/system-login /etc/pam.d_system-login_old
+if [ -f /etc/hardened_tumbleweed/pam.d_passwd_old ]
+then
+    echo "Old configuration file is already backed up. Assuming hardening was already applied and skipping."
+else
+    cp /etc/pam.d/passwd /etc/hardened_tumbleweed/pam.d_passwd_old
+    echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /etc/pam.d/passwd
+fi
 
-echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /etc/pam.d/passwd
-echo "session optional pam_umask.so umask=0027
+if [ -f /etc/hardened_tumbleweed/pam.d_common-session_old ]
+then
+    echo "Old configuration file is already backed up. Assuming hardening was already applied and skipping."
+else
+    cp /etc/pam.d/common-session /etc/hardened_tumbleweed/pam.d_common-session_old
+    echo "session optional pam_umask.so umask=0027
 session [default=1 success=ignore] pam_succeed_if.so quiet user ingroup secret-agents
 session optional pam_umask.so umask=0077" >> /etc/pam.d/common-session
-echo "auth optional pam_faildelay.so delay=4000000" >> /etc/pam.d/system-login
+fi
+
+if [ -f /etc/hardened_tumbleweed/pam.d_system-login_old ]
+then
+    echo "Old configuration file is already backed up. Assuming hardening was already applied and skipping."
+else
+    cp /etc/pam.d/system-login /etc/hardened_tumbleweed/pam.d_system-login_old
+    echo "auth optional pam_faildelay.so delay=4000000" >> /etc/pam.d/system-login
+fi
