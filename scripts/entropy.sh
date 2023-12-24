@@ -10,7 +10,7 @@
 
 if [ ! -f /usr/lib/systemd/system/haveged.service ]
 then
-touch /etc/haveged_installed
-zypper install haveged --non-interactive
-systemctl enable haveged
+	touch /etc/hardened_tumbleweed/haveged_installed
+	zypper --non-interactive install haveged
+	systemctl enable haveged
 fi
