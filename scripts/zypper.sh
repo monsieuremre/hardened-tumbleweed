@@ -8,9 +8,14 @@
 ## details. You should have received a copy of the GNU General Public License along with this program. If not, see
 ## <https://www.gnu.org/licenses/>.
 
-mkdir /etc/zypp_repos.d_old
-for file in $(find /etc/zypp/repos.d/ -type f)
-do
-cp $file /etc/zypp_repos.d_old/ 
-sed -i 's/http:/https:/g' $file
-done
+if [ -d /etc/hardened_tumbleweed/zypp_repos.d_old ]
+then
+    echo "Old configuration files are already backed up. Assuming hardening was already applied and skipping."
+else
+    mkdir /etc/hardened_tumbleweed/zypp_repos.d_old
+    for file in $(find /etc/zypp/repos.d/ -type f)
+    do
+        cp $file /etc/zypp_repos.d_old/ 
+        sed -i 's/http:/https:/g' $file
+    done
+fi
