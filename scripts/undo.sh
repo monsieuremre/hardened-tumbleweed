@@ -8,13 +8,13 @@
 ## details. You should have received a copy of the GNU General Public License along with this program. If not, see
 ## <https://www.gnu.org/licenses/>.
 
-mv -f /etc/issue_old /etc/issue
-mv -f /etc/issue.net_old /etc/issue.net
-mv -f /etc/fstab_old /etc/fstab
-mv -f /etc/pam.d_passwd_old /etc/pam.d/passwd 
-mv -f /etc/pam.d_common-session_old /etc/pam.d/common-session
-mv -f /etc/pam.d_system-login_old /etc/pam.d/system-login
-mv -f /etc/firewalld_firewalld.conf_old /etc/firewalld/firewalld.conf
+mv -f /etc/hardened_tumbleweed/issue_old /etc/issue
+mv -f /etc/hardened_tumbleweed/issue.net_old /etc/issue.net
+mv -f /etc/hardened_tumbleweed/fstab_old /etc/fstab
+mv -f /etc/hardened_tumbleweed/pam.d_passwd_old /etc/pam.d/passwd 
+mv -f /etc/hardened_tumbleweed/pam.d_common-session_old /etc/pam.d/common-session
+mv -f /etc/hardened_tumbleweed/pam.d_system-login_old /etc/pam.d/system-login
+mv -f /etc/hardened_tumbleweed/firewalld_firewalld.conf_old /etc/firewalld/firewalld.conf
 
 rm /etc/bluetooth/hardened-tumbleweed.conf
 rm /etc/default/grub.d/40_hardened-tumbleweed
@@ -31,20 +31,20 @@ rm /etc/systemd/networkd.conf.d/20_hardened-tumbleweed.conf
 
 for file in $(find /etc/zypp_repos.d_old -type f)
 do
-mv -f $file /etc/zypp/repos.d/
-rm $file
+    mv -f $file /etc/zypp/repos.d/
+    rm $file
 done
 
-rm -rf /etc/zypp_repos.d_old
+rm -rf /etc/hardened_tumbleweed/zypp_repos.d_old
 
-if [ -f /etc/usbguard_installed ]
+if [ -f /etc/hardened_tumbleweed/usbguard_installed ]
 then
-zypper remove usbguard-tools --non-interactive
-rm /etc/usbguard_installed
+    zypper --non-interactive remove usbguard-tools
+    rm /etc/usbguard_installed
 fi
 
-if [ -f /etc/haveged_installed ]
+if [ -f /etc/hardened_tumbleweed/haveged_installed ]
 then
-zypper remove haveged --non-interactive
-rm /etc/haveged_installed
+    zypper --non-interactiveremove haveged
+    rm /etc/haveged_installed
 fi
