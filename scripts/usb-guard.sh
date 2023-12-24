@@ -11,10 +11,10 @@
 
 if [ ! -f /etc/usbguard/rules.conf ]
 then
-touch /etc/usbguard_installed
-zypper install usbguard-tools --non-interactive
-usbguard generate-policy > /etc/usbguard/rules.conf
-echo "allow with-interface equals { 08:*:* }
+    touch /etc/hardened_tumbleweed/usbguard_installed
+    zypper --non-interactive install usbguard-tools
+    usbguard generate-policy > /etc/usbguard/rules.conf
+    echo "allow with-interface equals { 08:*:* }
 reject with-interface all-of { 08:*:* 03:00:* }
 reject with-interface all-of { 08:*:* 03:01:* }
 reject with-interface all-of { 08:*:* e0:*:* }
