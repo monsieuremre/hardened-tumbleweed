@@ -8,10 +8,20 @@
 ## details. You should have received a copy of the GNU General Public License along with this program. If not, see
 ## <https://www.gnu.org/licenses/>.
 
-mv /etc/issue /etc/issue_old
-echo "By continuing to connect to this system, you consent to the owner storing a log of all activity.
+if [ -f /etc/hardened_tumbleweed/issue_old ]
+then
+    echo "Old configuration file is already backed up. Assuming hardening was already applied and skipping."
+else
+    mv /etc/issue /etc/hardened_tumbleweed/issue_old
+    echo "By continuing to connect to this system, you consent to the owner storing a log of all activity.
 Unauthorized access is prohibited and may result in legal action. Do not proceed!" >> /etc/issue
+fi
 
-mv /etc/issue.net /etc/issue.net_old
-echo "By continuing to connect to this system, you consent to the owner storing a log of all activity.
+if [ -f /etc/hardened_tumbleweed/issue_old ]
+then
+    echo "Old configuration file is already backed up. Assuming hardening was already applied and skipping."
+else
+    mv /etc/issue.net /etc/issue.net_old
+    echo "By continuing to connect to this system, you consent to the owner storing a log of all activity.
 Unauthorized access is prohibited and may result in legal action. Do not proceed!" >> /etc/issue.net
+fi
