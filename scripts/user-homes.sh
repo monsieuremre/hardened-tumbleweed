@@ -10,8 +10,8 @@
 
 for directory in $(dir /home)
 do
-if id -u ${directory}
-then
-echo "/home/${directory}        ${directory}:${directory}   0700" >> /etc/permissions.d/50_hardened-tumbleweed
-fi
+    if id -u ${directory}
+    then
+        echo "/home/${directory}        ${directory}:${directory}   0700" >> /etc/permissions.d/50_hardened-tumbleweed
+    fi
 done
