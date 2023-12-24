@@ -10,17 +10,34 @@
 
 echo "Applying system hardening..."
 
+if [ ! -d /etc/hardened_tumbleweed ]
+then
+  mkdir /etc/hardened_tumbleweed
+fi
+
+echo "Hardening system banners..."
 bash scripts/banner-issue.sh
+echo "Hardening firewall configuration..."
 bash scripts/firewall.sh
+echo "Hardening mount options..."
 bash scripts/harden-fstab.sh
+echo "Hardening config files..."
 bash scripts/install-config-files.sh
+echo "Hardening login-defs..."
 bash scripts/login-defs.sh
-bash scripts/parm-harden.sh
+echo "Hardening pam..."
+bash scripts/pam-harden.sh
+echo "Hardening user home directories..."
 bash scripts/user-homes.sh
+echo "Hardening zypper..."
 bash scripts/zypper.sh
+echo "Improving entropy..."
 bash scripts/entropy.sh
+echo "Installing and setting usb-guard..."
 bash scripts/usb-guard.sh
+echo "Protecting grub..."
 bash scripts/protect_grub.sh
+echo "Reloading..."
 bash scripts/reload.sh
 clear
 
